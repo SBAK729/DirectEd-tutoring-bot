@@ -110,8 +110,13 @@ app = FastAPI(title="DirectEd Assistant API")
 # Allow CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=[
+        "https://raevmood.github.io/frontend/",  # Your GitHub Pages domain
+        "http://127.0.0.1:5501/",     
+        "https://directed.netlify.app/", 
+    ],
+    allow_credentials=True,
+    allow_methods=["POST"],
     allow_headers=["*"],
 )
 
