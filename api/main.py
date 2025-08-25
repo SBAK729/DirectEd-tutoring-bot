@@ -110,8 +110,15 @@ app = FastAPI(title="DirectEd Assistant API")
 # Allow CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=[
+        "https://raevmood.github.io",  # Your GitHub Pages domain
+        "http://localhost:3000",      # Local development
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5501/",      # Alternative localhost
+        "*"  # Allow all origins (use cautiously in production)
+    ],
+    allow_credentials=True,
+    allow_methods=["POST"],
     allow_headers=["*"],
 )
 
