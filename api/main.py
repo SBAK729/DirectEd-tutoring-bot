@@ -25,7 +25,7 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     conversation_response: Optional[str] = None
-    logs: Optional[List[str]] = None
+    logs: Optional[List[dict]] = None
 
 
 # ---------------------------
@@ -48,7 +48,7 @@ def handle_general_chat(query: str) -> Dict[str, Any]:
         llm = make_groq_llm()
         vectorstore = get_vectorstore()
         retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 1})
-        logs.append(f"Retrieved top documents for query: '{query}'")
+        logs.append({"Retrieved top documents for query": query})
 
         friendly_prompt = f"""
         You are a friendly and helpful assistant.
@@ -64,12 +64,12 @@ def handle_general_chat(query: str) -> Dict[str, Any]:
         )
 
         answer = qa_chain.invoke({"query": friendly_prompt})
-        logs.append("Generated answer using RAG.")
+        logs.append({"message":"Generated answer using RAG."})
 
         return {"conversation_response": answer["result"], "logs": logs}
 
     except Exception as e:
-        logs.append(f"Error in RAG: {str(e)}")
+        logs.append({"Error in RAG": str(e)})
         return {"conversation_response": "Sorry, I couldn't process your query.", "logs": logs}
 
 
@@ -135,8 +135,7 @@ def root():
     return {
         "status": "DirectEd Assistant API running",
         "routes": [
-            "/api/assistant/chat/invoke",
-            "/api/assistant/chat/playground/"
+            "/api/assistant/chat"
         ]
     }
 
@@ -167,7 +166,7 @@ def chat_handler(req: dict) -> ChatResponse:
             if subject_text and subject_text not in ALLOWED_SUBJECTS:
                 return ChatResponse(
                     conversation_response=f"Sorry, we do not offer courses on '{subject_text}'.",
-                    logs=["Subject not allowed."]
+                    logs=[{"message":"Subject not allowed."}]
                 )
 
             if not subject_text:
@@ -177,7 +176,7 @@ def chat_handler(req: dict) -> ChatResponse:
                 if "yes" not in content.lower():
                     return ChatResponse(
                         conversation_response="Sorry, only programming topics are supported.",
-                        logs=["Query not related to programming."]
+                        logs=[{"message": "Query not related to programming."}]
                     )
 
             # Graph execution
@@ -195,7 +194,7 @@ def chat_handler(req: dict) -> ChatResponse:
         )
 
     except Exception as e:
-        return ChatResponse(conversation_response=None, logs=[f"Error: {str(e)}"])
+        return ChatResponse(conversation_response=None, logs=[{"error": str(e)}])
 
 
 # ---------------------------

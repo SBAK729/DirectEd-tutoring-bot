@@ -6,7 +6,7 @@ from .base import get_vectorstore
 def node_retriever(state: AssistantState) -> dict:
     docsearch = get_vectorstore()
     query = state.get("query", "")
-    docs = docsearch.similarity_search(query, search_kwargs={"k": 1})
+    docs = docsearch.similarity_search(query, k=1)
 
     retrieved = []
     for i, d in enumerate(docs):
