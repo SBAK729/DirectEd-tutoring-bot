@@ -112,10 +112,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://raevmood.github.io/frontend/",  # Your GitHub Pages domain
-        "http://localhost:3000",      # Local development
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5501/",      # Alternative localhost
-        "*"  # Allow all origins (use cautiously in production)
+        "http://127.0.0.1:5501/",     
+        "https://directed.netlify.app/", 
     ],
     allow_credentials=True,
     allow_methods=["POST"],
